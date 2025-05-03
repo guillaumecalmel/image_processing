@@ -62,15 +62,61 @@ void file_rawWrite (uint32_t position, void * buffer, uint32_t size, size_t n, F
   fwrite(buffer, size, n, file);
 }
 
-t_bmp24 * bmp24_loadImage (const char * filename){
-  FILE *file = fopen(filename, "rb"); //open the file as readable
-  if (file == NULL){
-    printf("Error while opening file");
-    return NULL;
-  }
-  t_bmp24 * img = bmp24_allocate(img->width, img->height, img->colorDepth); //allocate the memory for the image
+void bmp24_readPixelValue (t_bmp24 * img, int x, int y, FILE * file){
+  int invertedY = img->height - 1 - y; //BMP stores rows bottom to top
+  uint32_t pixelOffset = img->header.offset + (invertedY*img->width + x)*3;
+  uint8_t bgr[3];
 
-  t_bmp_header header;
-  file_rawRead(BITMAP_MAGIC, &header, sizeof(t_bmp_header), 1, file);
+  file_rawRead(pixelOffset, bgr, 1, 3, file);
+  img->data[y][x].blue = bgr[0];
+  img->data[y][x].green = bgr[1];
+  img->data[y][x].red = bgr[2];
+}
+
+
+
+void bmp_24_readPixelData (t_bmp24 * img, FILE * file){
+  for (int y = 0; y < img->height; y++){
+    for (int x = 0; x < img->width; x++){
+      bmp24_readPixelValue(img, x, y, file);
+    }
+  }
+}
+
+void bmp24_writePixelValue (t_bmp24 * img,int x, int y, FILE * file){
+   int invertedY = img->height - 1 - y;
+    uint32_t pixelOffset = img->header.offset + (invertedY * img->width + x) * 3;
+
+    uint8_t bgr[3] = {
+        img->data[y][x].blue,
+        img->data[y][x].green,
+        img->data[y][x].red
+    };
+
+    file_rawWrite(pixelOffset, bgr, 1, 3, file);
+}
+
+void bmp24_writePixelData(t_bmp24*img, FILE*file){
+  for (int y = 0; y < img->height; y++){
+    for (int x = 0; x < img->width; x++){
+      bmp24_writePixelValue(img, x, y, file);
+    }
+  }
+}
+
+t_bmp24 * bmp24_loadImage (const char * filename){
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
