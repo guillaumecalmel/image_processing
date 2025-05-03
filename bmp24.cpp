@@ -105,7 +105,39 @@ void bmp24_writePixelData(t_bmp24*img, FILE*file){
 }
 
 t_bmp24 * bmp24_loadImage (const char * filename){
+	FILE * file = fopen(filename, "rb");
+    if (file == NULL){
+      printf("Error while opening file");
+      return NULL;
+    }
+    int32_t width, height;
+    uint16_t bits;
+    file_rawRead(BITMAP_WIDTH, &width, sizeof(int32_t), 1, file);
+    file_rawRead(BITMAP_HEIGHT, &height, sizeof(int32_t), 1, file);
+    file_rawRead(BITMAP_DEPTH, &bits, sizeof(uint16_t), 1, file);
 
+    if (bits != DEFAULT_DEPTH) {
+        printf("Error: unsupported color depth (%d bits). Only 24-bit supported.\n", bits);
+        fclose(file);
+        return NULL;
+    }
+
+    t_bmp24*img = bmp24_allocate(width, height, bits);
+    if(img == NULL){
+      printf("Error while allocating memory for img");
+      return NULL;
+    }
+
+    file_rawRead(BITMAP_MAGIC, &img->header, sizeof(t_bmp_header), 1, file); //read the header structure
+    file_rawRead(HEADER_SIZE, &img->header_info, sizeof(int32_t), 1, file);  //read the header info structure
+
+    if (img->header.type != BMP_TYPE){
+      printf("Not a BMP file\n");
+      bmp24_free(img);
+      fclose(file);
+      return NULL;
+    }
+    bmp_24_readPixelData(img, file);
 }
 
 
