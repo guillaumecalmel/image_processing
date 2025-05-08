@@ -157,12 +157,16 @@ void bmp8_threshold(t_bmp8 * img, int threshold){
   printf("Filter applied successfully!\n");
 }
 
-void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
+void bmp8_applyFilter(t_bmp8 * img, int kernel[3][3], int kernelSize) {
   int height = img->height;
   int width = img->width;
   int n = kernelSize/2; //half the size of the kernel
 
   unsigned char*newData = (unsigned char*)malloc(img->dataSize); //allocates memory for a copy of the image
+  if (newData == NULL) {
+    printf("Memory allocation for new data failed");
+    return;
+  }
   for (int i = 0; i < img->dataSize; i++) { //copy the image for a clean filtering, to not pollute the result
     newData[i] = img->data[i];
   }
@@ -176,7 +180,9 @@ void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
       for (int i = -n; i <= n; i++) {
         for (int j = -n; j <= n; j++) {
           int pixel = img->data[(y - i) * width + (x - j)];
+          //printf("%d", kernel[i+n][j+n]);
           sum += pixel * kernel[i + n][j + n];
+
         }
       }
 
@@ -184,7 +190,7 @@ void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
       if (sum < 0) sum = 0;
       if (sum > 255) sum = 255;
 
-      newData[y * width + x] = (unsigned char)sum;
+      newData[y * width + x] = sum;
     }
   }
   printf("Filter applied successfully!\n");
