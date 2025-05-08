@@ -129,7 +129,7 @@ t_bmp24 * bmp24_loadImage (const char * filename){
     }
 
     file_rawRead(BITMAP_MAGIC, &img->header, sizeof(t_bmp_header), 1, file); //read the header structure
-    file_rawRead(HEADER_SIZE, &img->header_info, sizeof(int32_t), 1, file);  //read the header info structure
+    file_rawRead(HEADER_SIZE, &img->header_info, sizeof(t_bmp_info), 1, file);  //read the header info structure
 
     if (img->header.type != BMP_TYPE){
       printf("Not a BMP file\n");
@@ -138,6 +138,22 @@ t_bmp24 * bmp24_loadImage (const char * filename){
       return NULL;
     }
     bmp_24_readPixelData(img, file);
+    fclose(file);
+    return img;
+}
+
+void bmp24_saveImage (t_bmp24 * img, const char * filename){
+  FILE*file = fopen(filename, "wb");
+  if (file == NULL){
+    printf("Error while opening file");
+    return;
+  }
+
+  file_rawWrite(BITMAP_MAGIC, &img->header, sizeof(t_bmp_header), 1, file);
+  file_rawWrite(HEADER_SIZE, &img->header_info, sizeof(t_bmp_info), 1, file);
+
+  bmp24_writePixelData(img, file);
+  fclose(file);
 }
 
 
