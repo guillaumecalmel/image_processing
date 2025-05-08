@@ -156,6 +156,15 @@ void bmp24_saveImage (t_bmp24 * img, const char * filename){
   fclose(file);
 }
 
+void bmp24_negative (t_bmp24 * img){
+  for (int i = 0; i < img->height; i++){
+    for (int j = 0; j < img->width; j++){
+      img->data[i][j].red = 255 - img->data[i][j].red;
+      img->data[i][j].green = 255 - img->data[i][j].green;
+      img->data[i][j].blue = 255 - img->data[i][j].blue;
+    }
+  }
+
 
 
 

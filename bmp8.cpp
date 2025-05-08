@@ -157,12 +157,16 @@ void bmp8_threshold(t_bmp8 * img, int threshold){
   printf("Filter applied successfully!\n");
 }
 
-void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
+void bmp8_applyFilter(t_bmp8 * img, float kernel[3][3], int kernelSize) {
   int height = img->height;
   int width = img->width;
   int n = kernelSize/2; //half the size of the kernel
 
   unsigned char*newData = (unsigned char*)malloc(img->dataSize); //allocates memory for a copy of the image
+  if (newData == NULL) {
+    printf("Memory allocation for new data failed");
+    return;
+  }
   for (int i = 0; i < img->dataSize; i++) { //copy the image for a clean filtering, to not pollute the result
     newData[i] = img->data[i];
   }
@@ -175,17 +179,29 @@ void bmp8_applyFilter(t_bmp8 * img, float ** kernel, int kernelSize) {
       // Convolution: apply the kernel
       for (int i = -n; i <= n; i++) {
         for (int j = -n; j <= n; j++) {
-          int pixel = img->data[(y - i) * width + (x - j)];
+          int pixel = img->data[(y + i) * width + (x - j)];
+
           sum += pixel * kernel[i + n][j + n];
+          //printf("%f\t",kernel[i + n][j + n]);
+          //printf("%f\t", sum);
         }
       }
 
       // Clamp the result to [0, 255]
-      if (sum < 0) sum = 0;
-      if (sum > 255) sum = 255;
+      if (sum < 0) {
+        sum = 0;
+      }
 
-      newData[y * width + x] = (unsigned char)sum;
+      if (sum > 255) {
+        sum = 255;
+      }
+
+      newData[y * width + x] = sum;
     }
+  }
+
+  for (int i = 0; i < img->dataSize; i++) {
+    img->data[i] = newData[i];
   }
   printf("Filter applied successfully!\n");
 }

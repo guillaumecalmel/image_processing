@@ -1,6 +1,7 @@
 #include "bmp8.cpp"
+#include "bmp24.h"
 #include <stdio.h>
-#include <bits/locale_facets_nonio.h>
+#include <locale>
 
 int display_menu() {
     printf("Please choose an option:\n");
@@ -32,10 +33,9 @@ int display_filter_choice() {
     return choice;
 }
 
-int main(){
+void bmp8_img() {
     int value;
     t_bmp8*img;
-    printf("Welcome to the image processing application !\n");
     int choice = 0;
     while (choice !=5) {
         choice = display_menu();
@@ -44,7 +44,7 @@ int main(){
 
         }
         if (choice == 2) {
-            bmp8_saveImage("new_barbara_gray.bmp", img);
+            bmp8_saveImage("new4_barbara_gray.bmp", img);
         }
         if (choice == 3) {
             int choice = display_filter_choice();
@@ -52,18 +52,71 @@ int main(){
                 bmp8_negative(img);
             }
             if (choice == 2) {
-                printf("Choose a brightness value from 0 to 255");
+                printf("Choose a brightness value from 0 to 255\n");
                 scanf("%d", &value);
                 bmp8_brightness(img, value);
             }
             if (choice == 3) {
-                printf("Choose a middle value from 0 to 255");
+                printf("Choose a middle value from 0 to 255\n");
                 scanf("%d", &value);
                 bmp8_threshold(img, value);
+            }
+            if (choice == 4) {
+                bmp8_applyFilter(img, box_blur, 3);
+            }
+            if (choice == 5) {
+                bmp8_applyFilter(img, gaussian_blur, 3);
+            }
+            if (choice == 6) {
+                bmp8_applyFilter(img, sharpen, 3);
+            }
+            if (choice == 7) {
+                bmp8_applyFilter(img, outline, 3);
+            }
+            if (choice == 8) {
+                bmp8_applyFilter(img, emboss, 3);
             }
 
         }
     }
+}
+
+void bmp24_img() {
+    int value;
+    int choice = 0;
+    t_bmp24*img;
+    while (choice !=5) {
+        choice = display_menu();
+        if (choice == 1) {
+            img = bmp24_loadImage("flowers_color.bmp");
+        }
+        if (choice == 2) {
+            bmp24_saveImage(img, "flowers_color2.bmp");
+        }
+    }
+}
+
+int main(){
+    printf("%d\n", box_blur[2][0]);
+    int run = 1;
+    printf("Welcome to the image processing application !\n");
+    while (run != 3) {
+
+        printf("What image do you want to work on ?\n");
+        printf("\t1. barbara_gray.bmp (Black and white image)\n");
+        printf("\t2. flowers_color.bmp (Colored image)\n");
+        printf("\t3. Quit\n");
+        scanf("%d", &run);
+        if (run == 1) {
+            bmp8_img();
+        }
+        if (run == 3) {
+            printf("Goodbye !\n");
+        }
+    }
+
+
+
     return 0;
 
 }
