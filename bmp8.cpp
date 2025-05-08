@@ -108,7 +108,7 @@ void bmp8_saveImage(const char * filename, t_bmp8 * img){
   }
 
   fclose(file);
-  printf("Image saved successfully !");
+  printf("Image saved successfully !\n");
 }
 
 void bmp8_free(t_bmp8 * img){
