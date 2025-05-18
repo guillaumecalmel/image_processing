@@ -62,16 +62,24 @@ void file_rawWrite (uint32_t position, void * buffer, uint32_t size, size_t n, F
   fwrite(buffer, size, n, file);
 }
 
-void bmp24_readPixelValue (t_bmp24 * img, int x, int y, FILE * file){
-  int invertedY = img->height - 1 - y; //BMP stores rows bottom to top
-  uint32_t pixelOffset = img->header.offset + (invertedY*img->width + x)*3;
-  uint8_t bgr[3];
+void bmp24_readPixelValue(t_bmp24 *img, int x, int y, FILE *file) {
+  int invertedY = img->height - 1 - y; // BMP stores from bottom to top
+  int rowSize = ((img->width * 3 + 3) / 4) * 4; // Padded row size
+  uint32_t pixelOffset = img->header.offset + invertedY * rowSize + x * 3;
 
+  uint8_t bgr[3];
   file_rawRead(pixelOffset, bgr, 1, 3, file);
+
   img->data[y][x].blue = bgr[0];
   img->data[y][x].green = bgr[1];
   img->data[y][x].red = bgr[2];
+  /*printf("Pixel (%d, %d): R=%d G=%d B=%d\n", x, y,
+       img->data[y][x].red,
+       img->data[y][x].green,
+       img->data[y][x].blue);*/
+
 }
+
 
 
 
@@ -83,23 +91,26 @@ void bmp_24_readPixelData (t_bmp24 * img, FILE * file){
   }
 }
 
-void bmp24_writePixelValue (t_bmp24 * img,int x, int y, FILE * file){
-   int invertedY = img->height - 1 - y;
-    uint32_t pixelOffset = img->header.offset + (invertedY * img->width + x) * 3;
+void bmp24_writePixelValue(t_bmp24 *img, int x, int y, FILE *file) {
+  int invertedY = img->height - 1 - y;
+  int rowSize = ((img->width * 3 + 3) / 4) * 4;  // padded row size
+  uint32_t pixelOffset = img->header.offset + invertedY * rowSize + x * 3;
 
-    uint8_t bgr[3] = {
-        img->data[y][x].blue,
-        img->data[y][x].green,
-        img->data[y][x].red
-    };
+  uint8_t bgr[3] = {
+    img->data[y][x].blue,
+    img->data[y][x].green,
+    img->data[y][x].red
+};
 
-    file_rawWrite(pixelOffset, bgr, 1, 3, file);
+  file_rawWrite(pixelOffset, bgr, 1, 3, file);
 }
+
 
 void bmp24_writePixelData(t_bmp24*img, FILE*file){
   for (int y = 0; y < img->height; y++){
     for (int x = 0; x < img->width; x++){
       bmp24_writePixelValue(img, x, y, file);
+
     }
   }
 }
@@ -137,8 +148,11 @@ t_bmp24 * bmp24_loadImage (const char * filename){
       fclose(file);
       return NULL;
     }
+    printf("Width: %d, Height: %d, Bits: %d\n", width, height, bits);
+
     bmp_24_readPixelData(img, file);
     fclose(file);
+  printf("Image loaded successfully !\n");
     return img;
 }
 
@@ -153,17 +167,22 @@ void bmp24_saveImage (t_bmp24 * img, const char * filename){
   file_rawWrite(HEADER_SIZE, &img->header_info, sizeof(t_bmp_info), 1, file);
 
   bmp24_writePixelData(img, file);
+  printf("Image saved successfully !\n");
   fclose(file);
 }
 
-void bmp24_negative (t_bmp24 * img){
+void bmp24_negative (t_bmp24 * img) {
   for (int i = 0; i < img->height; i++){
     for (int j = 0; j < img->width; j++){
+      //printf("%d %d %d\n", img->data[i][j].red, img->data[i][j].green, img->data[i][j].blue);
       img->data[i][j].red = 255 - img->data[i][j].red;
       img->data[i][j].green = 255 - img->data[i][j].green;
       img->data[i][j].blue = 255 - img->data[i][j].blue;
+      //printf("%d %d %d\n", img->data[i][j].red, img->data[i][j].green, img->data[i][j].blue);
     }
   }
+  printf("Filter applied successfully !\n");
+}
 
 
 

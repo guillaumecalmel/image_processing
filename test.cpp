@@ -1,5 +1,5 @@
 #include "bmp8.cpp"
-#include "bmp24.h"
+#include "bmp24.cpp"
 #include <stdio.h>
 #include <locale>
 
@@ -22,6 +22,22 @@ int display_filter_choice() {
     printf("\t2. Brightness\n");
     printf("\t3. Black and white\n");
     printf("\t4. Box blur\n");
+    printf("\t5. Gaussian blur\n");
+    printf("\t6. Sharpness\n");
+    printf("\t7. Outline\n");
+    printf("\t8. Emboss\n");
+    printf("\t9. Return to the previous menu\n");
+    int choice;
+    scanf("%d", &choice);
+    printf(">>> Your choice: %d\n", choice);
+    return choice;
+}
+int display_filter_choice2() {
+    printf("Please choose a filter:\n");
+    printf("\t1. Negative\n");
+    printf("\t2. Grayscale\n");
+    printf("\t3. Brightness\n");
+    printf("\t4. Box Blur\n");
     printf("\t5. Gaussian blur\n");
     printf("\t6. Sharpness\n");
     printf("\t7. Outline\n");
@@ -91,7 +107,13 @@ void bmp24_img() {
             img = bmp24_loadImage("flowers_color.bmp");
         }
         if (choice == 2) {
-            //bmp24_saveImage(img, "flowers_color2.bmp");
+            bmp24_saveImage(img, "flowers_color2.bmp");
+        }
+        if (choice == 3) {
+            int choice = display_filter_choice2();
+            if (choice == 1) {
+                bmp24_negative(img);
+            }
         }
     }
 }
