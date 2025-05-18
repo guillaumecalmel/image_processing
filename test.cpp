@@ -91,7 +91,7 @@ void bmp24_img() {
             img = bmp24_loadImage("flowers_color.bmp");
         }
         if (choice == 2) {
-            bmp24_saveImage(img, "flowers_color2.bmp");
+            //bmp24_saveImage(img, "flowers_color2.bmp");
         }
     }
 }
@@ -109,6 +109,9 @@ int main(){
         scanf("%d", &run);
         if (run == 1) {
             bmp8_img();
+        }
+        if (run == 2) {
+            bmp24_img();
         }
         if (run == 3) {
             printf("Goodbye !\n");
