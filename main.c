@@ -60,7 +60,7 @@ void bmp8_img() {
 
         }
         if (choice == 2) {
-            bmp8_saveImage("new4_barbara_gray.bmp", img);
+            bmp8_saveImage("new_barbara_gray.bmp", img);
         }
         if (choice == 3) {
             int choice = display_filter_choice();
@@ -108,7 +108,6 @@ void bmp24_img() {
     int value;
     int choice = 0;
     t_bmp24*img;
-    printf("%d\n", img->header.offset);
     while (choice !=5) {
         choice = display_menu();
         if (choice == 1) {

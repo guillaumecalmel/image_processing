@@ -137,7 +137,7 @@ void bmp24_writePixelData (t_bmp24 * image, FILE * file)
     {
     	for(int x = 0; x < width; x ++)
         {
-          bmp24_writePixelValue(image, x, y, file);
+			bmp24_writePixelValue(image, x, y, file);
         }
     }
 }
@@ -152,6 +152,7 @@ t_bmp24 * bmp24_loadImage(const char * filename)
     }
     else
         {
+
             // Read the file
             int width;
             int height;
@@ -171,7 +172,10 @@ t_bmp24 * bmp24_loadImage(const char * filename)
             t_bmp24 * img = bmp24_allocate (width, height, colorDepth);
 
 
+
+
             t_bmp_header header;
+
             file_rawRead(BITMAP_MAGIC, &header, sizeof(t_bmp_header), 1, file);
 
             t_bmp_info header_info;
@@ -182,14 +186,12 @@ t_bmp24 * bmp24_loadImage(const char * filename)
 
 
     		uint32_t offset;
-            //TEST
     		file_rawRead(BITMAP_OFFSET, &offset, sizeof(uint32_t), 1, file);
 			fseek(file, offset, BITMAP_MAGIC);
             bmp24_readPixelData(img, file);
 
             fclose(file);
             printf("Image loaded successfully !\n");
-    	printf("%d\n", img->header.offset);
 
             return img;
         }
@@ -202,15 +204,12 @@ void bmp24_saveImage (t_bmp24 * img, const char * filename){
         printf("Error: File %s could not be opened\n", filename);
         return;
       }
-      else
-          {
+	  file_rawWrite(BITMAP_MAGIC, &img -> header, sizeof(t_bmp_header), 1, file);
+	  file_rawWrite(HEADER_SIZE, &img -> header_info, sizeof(t_bmp_info), 1, file);
 
-        file_rawWrite(BITMAP_MAGIC, &img -> header, sizeof(t_bmp_header), 1, file);
-        file_rawWrite(HEADER_SIZE, &img -> header_info, sizeof(t_bmp_info), 1, file);
+	  bmp24_writePixelData(img, file);
+	  fclose(file);
 
-      	bmp24_writePixelData(img, file);
-        fclose(file);
-      }
 
       printf("Image saved successfully !\n");
 }
