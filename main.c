@@ -2,6 +2,10 @@
 #include "bmp24.c"
 #include <stdio.h>
 
+/*
+ * This is the main file of the project !
+ * It provides the display of the menu and choice of the different actions on the images
+ * */
 
 int display_menu() {
     printf("Please choose an option:\n");
@@ -49,7 +53,7 @@ int display_filter_choice2() {
     return choice;
 }
 
-void bmp8_img() {
+void bmp8_img() { // Concerns the bmp8 files
     int value;
     t_bmp8*img;
     int choice = 0;
@@ -105,7 +109,7 @@ void bmp8_img() {
     }
 }
 
-void bmp24_img() {
+void bmp24_img() { // Concerns the bmp24 files
     int value;
     int choice = 0;
     t_bmp24*img;
@@ -156,7 +160,7 @@ void bmp24_img() {
     }
 }
 
-int main(){
+int main(){ // runs the program
 
     int run = 1;
     printf("Welcome to the image processing application !\n");
