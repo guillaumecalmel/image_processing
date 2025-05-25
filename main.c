@@ -63,43 +63,44 @@ void bmp8_img() {
             bmp8_saveImage("new_barbara_gray.bmp", img);
         }
         if (choice == 3) {
-            int choice = display_filter_choice();
-            if (choice == 1) {
-                bmp8_negative(img);
-            }
-            if (choice == 2) {
-                printf("Choose a brightness value from 0 to 255\n");
-                scanf("%d", &value);
-                bmp8_brightness(img, value);
-            }
-            if (choice == 3) {
-                printf("Choose a middle value from 0 to 255\n");
-                scanf("%d", &value);
-                bmp8_threshold(img, value);
-            }
-            if (choice == 4) {
-                bmp8_applyFilter(img, box_blur, 3);
-            }
-            if (choice == 5) {
-                bmp8_applyFilter(img, gaussian_blur, 3);
-            }
-            if (choice == 6) {
-                bmp8_applyFilter(img, sharpen, 3);
-            }
-            if (choice == 7) {
-                bmp8_applyFilter(img, outline, 3);
-            }
-            if (choice == 8) {
-                bmp8_applyFilter(img, emboss, 3);
+            if (img == NULL) {
+                printf("Error : No image is loaded\n");
+
+            } else {
+                int choice = display_filter_choice();
+                if (choice == 1) {
+                    bmp8_negative(img);
+                }
+                if (choice == 2) {
+                    printf("Choose a brightness value from 0 to 255\n");
+                    scanf("%d", &value);
+                    bmp8_brightness(img, value);
+                }
+                if (choice == 3) {
+                    printf("Choose a middle value from 0 to 255\n");
+                    scanf("%d", &value);
+                    bmp8_threshold(img, value);
+                }
+                if (choice == 4) {
+                    bmp8_applyFilter(img, box_blur, 3);
+                }
+                if (choice == 5) {
+                    bmp8_applyFilter(img, gaussian_blur, 3);
+                }
+                if (choice == 6) {
+                    bmp8_applyFilter(img, sharpen, 3);
+                }
+                if (choice == 7) {
+                    bmp8_applyFilter(img, outline, 3);
+                }
+                if (choice == 8) {
+                    bmp8_applyFilter(img, emboss, 3);
+                }
             }
 
         }
         if (choice == 4) {
-            printf("Image info :\n");
-            printf("\tWidth: %d\n", img->width);
-            printf("\tHeight: %d\n", img->height);
-            printf("\tColor Depth : %d\n", img->colorDepth);
-            printf("\tData size : %d\n", img->dataSize);
+            bmp8_printInfo(img);
         }
     }
 }
@@ -176,9 +177,5 @@ int main(){
             printf("Goodbye !\n");
         }
     }
-
-
-
     return 0;
-
 }

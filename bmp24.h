@@ -3,6 +3,10 @@
 #ifndef BMP24_H
 #define BMP24_H
 
+/*This file is the header file of the bmp24.c file.
+* It defines the t_bmp24 structure which later is the image structure,
+* and implements the functions used. */
+
 // Offsets for the BMP header
 #define BITMAP_MAGIC 0x00 // offset 0
 #define BITMAP_SIZE 0x02 // offset 2
