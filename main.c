@@ -1,7 +1,7 @@
-#include "bmp8.cpp"
-#include "bmp24.cpp"
+#include "bmp8.c"
+#include "bmp24.c"
 #include <stdio.h>
-#include <locale>
+
 
 int display_menu() {
     printf("Please choose an option:\n");
