@@ -125,6 +125,8 @@ void bmp24_img() {
                 bmp24_grayscale(img);
             }
             if (choice == 3) {
+                printf("Choose a brightness value from 0 to 255\n");
+                scanf("%d", &value);
                 bmp24_brightness(img, value);
             }
             if (choice == 4) {
@@ -154,7 +156,7 @@ void bmp24_img() {
 }
 
 int main(){
-    printf("%d\n", box_blur[2][0]);
+
     int run = 1;
     printf("Welcome to the image processing application !\n");
     while (run != 3) {

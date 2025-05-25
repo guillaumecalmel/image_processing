@@ -53,7 +53,6 @@ t_bmp24 * bmp24_allocate (int width, int height, int colorDepth)
     return img;
 }
 
-// De base c'est t_bmp mais ça ne marche pas et fais pas de sens
 void bmp24_free (t_bmp24 * img)
 {
   if (img == NULL)
@@ -64,36 +63,17 @@ void bmp24_free (t_bmp24 * img)
   free(img);
 }
 
-/*
-* @brief Set the file cursor to the position position in the file file,
-* then read n elements of size size from the file into the buffer.
-* @param position The position from which to read in file.
-* @param buffer The buffer to read the elements into.
-* @param size The size of each element to read.
-* @param n The number of elements to read.
-* @param file The file descriptor to read from.
-* @return void
-*/
+
 void file_rawRead (uint32_t position, void * buffer, uint32_t size, size_t n, FILE * file) {
     fseek(file, position, SEEK_SET);
     fread(buffer, size, n, file);
 }
-/*
-* @brief Set the file cursor to the position position in the file file,
-* then write n elements of size size from the buffer into the file.
-* @param position The position from which to write in file.
-* @param buffer The buffer to write the elements from.
-* @param size The size of each element to write.
-* @param n The number of elements to write.
-* @param file The file descriptor to write to.
-* @return void
-*/
+
 void file_rawWrite (uint32_t position, void * buffer, uint32_t size, size_t n, FILE * file) {
     fseek(file, position, SEEK_SET);
     fwrite(buffer, size, n, file);
 }
 
-// De base c'est t_bmp mais ça ne marche pas et fais pas de sens
 void bmp24_readPixelValue (t_bmp24 * image, int x, int y, FILE * file)
 {
 	uint8_t bgr[3];
@@ -152,8 +132,6 @@ t_bmp24 * bmp24_loadImage(const char * filename)
     }
     else
         {
-
-            // Read the file
             int width;
             int height;
             int colorDepth;
@@ -170,10 +148,6 @@ t_bmp24 * bmp24_loadImage(const char * filename)
 			}
             // Allocate the memory to what we just read
             t_bmp24 * img = bmp24_allocate (width, height, colorDepth);
-
-
-
-
             t_bmp_header header;
 
             file_rawRead(BITMAP_MAGIC, &header, sizeof(t_bmp_header), 1, file);
@@ -212,6 +186,7 @@ void bmp24_saveImage (t_bmp24 * img, const char * filename){
 
 
       printf("Image saved successfully !\n");
+
 }
 
 void bmp24_negative(t_bmp24 * img)
@@ -270,9 +245,7 @@ uint8_t clamp(int value)
     return (uint8_t)value;
 }
 
-void bmp24_brightness (t_bmp24 * img, int value)
-{
-
+void bmp24_brightness (t_bmp24 * img, int value){
 	if (img == NULL || img->data == NULL)
 	{
 		printf("Error");
@@ -290,7 +263,6 @@ void bmp24_brightness (t_bmp24 * img, int value)
 	printf("Filter applied successfully !\n");
 }
 
-//Part 2.6
 
 t_pixel bmp24_convolution(t_bmp24 *img, int x, int y, float **kernel, int kernelSize) {
 	int kOffset = kernelSize / 2;
@@ -301,7 +273,6 @@ t_pixel bmp24_convolution(t_bmp24 *img, int x, int y, float **kernel, int kernel
 			int xx = x + j;
 			int yy = y + i;
 
-			// Ensure the coordinates are within the image bounds
 			if (xx >= 0 && xx < img->width && yy >= 0 && yy < img->height) {
 				t_pixel pixel = img->data[yy][xx];
 				float kernelValue = kernel[i + kOffset][j + kOffset];
@@ -312,10 +283,21 @@ t_pixel bmp24_convolution(t_bmp24 *img, int x, int y, float **kernel, int kernel
 		}
 	}
 
-	// Clamp the values to the range [0, 255]
-	r = r < 0 ? 0 : (r > 255 ? 255 : r);
-	g = g < 0 ? 0 : (g > 255 ? 255 : g);
-	b = b < 0 ? 0 : (b > 255 ? 255 : b);
+	if (r < 0)
+		r = 0;
+	else if (r > 255)
+		r = 255;
+
+	if (g < 0)
+		g = 0;
+	else if (g > 255)
+		g = 255;
+
+	if (b < 0)
+		b = 0;
+	else if (b > 255)
+		b = 255;
+
 
 	t_pixel newPixel = {(uint8_t)r, (uint8_t)g, (uint8_t)b};
 	return newPixel;
@@ -363,7 +345,6 @@ void apply_filter(t_bmp24 *img, float **kernel, int kernelSize) {
 		}
 	}
 
-	// Copy the temp data back to the original image
 	for (int y = 1; y < img->height - 1; y++) {
 		for (int x = 1; x < img->width - 1; x++) {
 			img->data[y][x] = tempData[y][x];
