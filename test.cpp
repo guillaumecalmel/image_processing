@@ -94,6 +94,13 @@ void bmp8_img() {
             }
 
         }
+        if (choice == 4) {
+            printf("Image info :\n");
+            printf("\tWidth: %d\n", img->width);
+            printf("\tHeight: %d\n", img->height);
+            printf("\tColor Depth : %d\n", img->colorDepth);
+            printf("\tData size : %d\n", img->dataSize);
+        }
     }
 }
 
@@ -101,19 +108,48 @@ void bmp24_img() {
     int value;
     int choice = 0;
     t_bmp24*img;
+    printf("%d\n", img->header.offset);
     while (choice !=5) {
         choice = display_menu();
         if (choice == 1) {
             img = bmp24_loadImage("flowers_color.bmp");
         }
         if (choice == 2) {
-            bmp24_saveImage(img, "flowers_color2.bmp");
+            bmp24_saveImage(img, "new_flowers_color.bmp");
         }
         if (choice == 3) {
             int choice = display_filter_choice2();
             if (choice == 1) {
                 bmp24_negative(img);
             }
+            if (choice == 2) {
+                bmp24_grayscale(img);
+            }
+            if (choice == 3) {
+                bmp24_brightness(img, value);
+            }
+            if (choice == 4) {
+                bmp24_boxBlur(img);
+            }
+            if (choice == 5) {
+                bmp24_gaussianBlur(img);
+            }
+            if (choice == 6) {
+                bmp24_sharpen(img);
+            }
+            if (choice == 7) {
+                bmp24_outline(img);
+            }
+            if (choice == 8) {
+                bmp24_emboss(img);
+            }
+        }
+        if (choice == 4) {
+            printf("Image info :\n");
+            printf("\tWidth: %d\n", img->width);
+            printf("\tHeight: %d\n", img->height);
+            printf("\tColor Depth : %d\n", img->colorDepth);
+            printf("\tData size : %d\n", img->width * img->height);
         }
     }
 }
